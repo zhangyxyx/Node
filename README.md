@@ -14,5 +14,5 @@
   <li>async：多线程并发控制</li>
 </ul>
 <p>简要介绍：利用superagnet获取都路径下面的结果，使用cheerio将结果转为html解析，然后根据这个路径真实的页面下的html结果，获取你想获取的数据</p>
-<h3>下载：git clone 路径</h3>
-<h3>执行：node index.js</h3>
+<p class="highlight highlight-source-shell">下载：git clone 路径</p>
+<p class="highlight highlight-source-shell">执行：node index.js</p>
