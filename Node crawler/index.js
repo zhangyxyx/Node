@@ -1,16 +1,25 @@
+//http的库 可以发起http请求
 var superagent=require('superagent');
+//解析http返回的html内容 可以理解为一个nodejs的jquery
 var cheerio=require('cheerio');
 var url=require('url');
+//获取文件
 var fs=require("fs");
 var request=require('request');
+//初始url
 var targeturl='https://movie.douban.com/chart';
-
+//利用事件机制解决回调函数深度嵌套的问题
 var eventproxy=require('eventproxy');
 var ep=new eventproxy()
-
+//多线程并发控制
 var async=require('async')
 
-superagent.get(targeturl).end(function(err,res){
+fetPage(targeturl);
+function fetPage(start){
+    getdata(start)
+}
+function getdata(newurl){
+superagent.get(newurl).end(function(err,res){
     if(err){
         return console.error(err)
     }
@@ -33,12 +42,13 @@ superagent.get(targeturl).end(function(err,res){
 
         var news={
             //名字
-            title:$title,
+            title:$(".item .nbg").attr("title"),
             //路径
             url:href
         }
-        console.log($)
-        saveImage($,news)
+
+        saveImage($,news);
+        saveFile($,news)
     })
     repoUrls=repoUrls.slice(0,2)
 
@@ -52,12 +62,14 @@ superagent.get(targeturl).end(function(err,res){
             var httpGitUrl=$('.item').attr('value')
 
             return ({
+                title:$(".item .nbg").attr("title"),
                 url:repoUrl,
                 httpGitUrl:httpGitUrl
             })
             concurrencyCount--;
             callback(null,repoUrl)
         });
+       
     }
 
     async.mapLimit(repoUrls,5,function(repoUrl,callback){
@@ -69,19 +81,33 @@ superagent.get(targeturl).end(function(err,res){
     }
     )
 })
-
+}
+//保留文件
+function saveFile($,news){
+    $(".item .pl").each(function(index,item){
+        var x=$(this).text();
+        console.log(news)
+        x=x+"\n";
+        fs.appendFile('./data/'+news+'.txt',x,'utf-8',function(err){
+            if(err){
+                console.log(err)
+            }
+        })
+    })
+}
+//保留图片资源
 function saveImage($,news){
     $(".item .nbg img").each(function(index,item){
-        var img_title=$(this).attr("alt");
-        console.log(img_title)
+        var img_title=$(this).attr("alt");//获取图片名字
         var img_filename=img_title+'.jpg';
-        var img_src=$(this).attr("src");
-
+        var img_src=$(this).attr("src");//获取图片的路径
+        //采用request模块，向服务器发起一次请求，获取图片资源
         request.head(img_src,function(err,res,body){
             if(err){
                 console.log(err)
             }
         });
-        request(img_src).pipe(fs.createWriteStream('./image/'+news+'---'+img_filename))
+
+        request(img_src).pipe(fs.createWriteStream('./image/'+img_filename))
     })
 }
