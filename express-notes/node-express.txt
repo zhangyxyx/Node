@@ -1,0 +1,240 @@
+=====基本用法
+1.路由：
+路由是由一个url http 和若干句柄组成的组成
+var express=require('express');
+var app=express();
+app.get('/',function(req,res){
+    res.send('hello world')
+})
+
+2.路由的方法
+app.get('/',function(req,res){
+    res.send('get')
+})
+app.all()是一个特殊的路由方法，没有任何http方法与其对应，它的作用是对于一个路径上的所有请求
+加载中间件
+app.all('/secret',function(req,res,next){
+    console.log('accessing')
+    next();
+})
+这个例子是不管使用什么模块这个句柄都是要执行的
+
+3.路由路径
+路由路径和请求方法一起定义了请求的路径，他可以是字符串 字符串模式或者正则表达式
+字符串
+'/' //根路径
+'/about' //about
+'/random.text' //random.text
+使用字符串模式的路由
+'/ab?cd' acd abcd
+'/ab+cd' abcd abbcd abbbcd等
+'/ab*cd' abcd、abxcd、abRABDOMcd、ab123cd等
+'/ab(cd)?e' /abe /abcde
+使用正则表达式
+/a/ 匹配任何路径含有a的路径
+/.*fly$/ 匹配 butterfly、dragonfly，不匹配 butterflyman、dragonfly man等
+
+4.路径句柄
+可以为请求处理提供多个回调函数 唯一的区别是这些回调函数有可能调用next('router')
+方法而略过其他路由回调函数 
+形式：一个函数 一个函数数组
+一个回调函数
+app.get('/example/a',function(req,res){
+    res.send('a');
+})
+多个回调函数
+app.get('/example/b',function(req,res,next){
+    console.log('1');
+    next();
+},function(req,res){
+    res.send('2')
+})
+混合使用函数和函数数组处理路由
+var cb0=function(req,res,next){
+    console.log(1);
+    next();
+}
+var cb1=function(req,res,next){
+    console.log(2);
+    next();
+}
+app.get('/example/d',[cb0,cb1],function(req,res,next){
+    console.log('2');
+    next();
+},function(req,res){
+    res.send('3')
+})
+
+5.响应方法
+res.download()提示下载文件
+res.end()终结响应处理流程
+res.json()发送一个json格式的相应
+res.jsonp()发送一个支持jsonp的json格式的相应
+res.redirect()重定向请求
+res.render()重新渲染模板
+res.send()发送各种类型的响应
+res.sendFile以八位字节流的形式发送文件
+res.sendStatus()设置响应转态代码 并以其字符串形式作为响应体的一部分发送
+
+6.express.router
+可使用这个类创建模块化 可挂载的路由句柄，router实例时一个完整的中间件和路由系统
+birds.js
+var express=require('express');
+var router=express.Router();
+eouter.use(function timeLog(req,res,next){
+    console.log('Time',Date.now())
+    next();
+})
+router.get('/',function(req,res){
+    res.send('a')
+})
+router.get('/about',function(req,res){
+    res.send('ds')
+})
+module.exports=router
+
+var birds=require('./birds);
+app.use('/birds',birds)
+
+====.中间件
+(1).使用中间件
+express是一个自身功能极其简单，完全是由路由和中间件组成的web开发框架：从本质来说，express应用
+就是在调用各种中间件
+
+中间件是一个函数，可以访问请求对象 响应对象和web应用处于请求-响应循环流程中的中间件 一般被命名为next变量
+中间件的功能：
+执行任何代码 修改请求和响应对象 终结请求-响应循环 调用堆栈中的下一个中间件
+如果当前中间件没有终结请求-响应循环，则必须调用next()方法将控制权交给下一个中间件，否则请求就会挂起
+express可以使用以下几种中间件
+应用级中间件 路由级中间件 错误处理中间件 内置中间件 第三方中间件
+使用可选则挂载路径，可在应用级别或路由级别装载中间件。另外，你可以同时装在一系列中间件函数，从而
+在一个挂载点上创建一个子中间件栈
+(2).应用级中间件
+应用级中间件绑定到app对象使用app.use()和app.METHOD() 其中METHOD是需要处理的http请求的方法
+var app=express();
+//没有挂载路径的中间件，应用的每个请求都会执行该中间件
+app.use(function(req,res,next){
+    console.log('s');
+    next();
+})
+//挂载在/user/:id的中间件，任何指向/user/:id的请求都会执行它
+app.use('/user/:id',function(req,res,next){
+    console.log('request',req.method);
+    next();
+})
+//路由和句柄 处理指向/user/:id的GET请求
+app.get('/user/:id',function(req,res,next){
+    res.send('USER')
+})
+展示了在一个挂载点装载一组的中间件
+//一个中间件栈，对任何指向/user/:id的http请求打印出相关信息
+app.use('/user/:id',function(req,res,next){
+    console.log('e',res.originalUrl);
+    next();
+},function(req,res,next){
+    console.log('e',req,method);
+    next();
+})
+作为中间件系统的路由句柄，使得为路径定义多个路径成为可能。在下面的例子中，为指向/user/:id
+的GET请求定义了两个路由。第二个路由虽然不会带来任何问题，但是却永远不会被调用，因为第一个
+路由已经终止了请求-响应循环
+//一个中间件栈 处理指向/user/:id的GET请求
+app.get('/user/:id',function(req,res,next){
+    console.log('id',re.params.id);
+    next();
+},function(req,res,next){
+    res.next('user')
+})
+//处理/user/:id打印出用户id
+app.get('/user/:id',function(req,res,next){
+    res.end(req.params.id)
+})
+如果需要在中间件栈中跳过剩余中间件，调用next('route')方法将控制权交给下一个路由。注意：next('route')只对使用
+app.VERB()或router.VERB()加载的中间件有效
+//一个中间件栈，处理指向/user/:id的GET请求
+app.get('/user/:id',function(req,res,next){
+    //如果user id 为0 跳到下一个路由
+    if(req.params.id==0) next('route');
+    //否则将控制权交个下一个中间件
+    else next();
+},function(req,res,next){
+    res.render('regular')
+})
+
+app.get('/user/:id',function(req,res,next){
+    res.render('s')
+})
+
+(3).路由级中间件
+路由级中间件和应用级中间件一样，只是它绑定的对象为express.Router()
+var Router=express.Router();
+路由级使用router.use()或router.VERB()加载
+var app=express();
+var router=express.Router();
+//没有挂载路径的中间件，通过该路由的每个请求都会执行该中间件
+router.use(function(req,res,next){
+    console.log('time',Date.now())
+    next();
+})
+//一个中间件栈，显示任何指向/user/:id的http请求的信息
+router.use('/user/:id',function(req,res,next){
+    console.log('e',req.originalUrl)
+    next();
+},function(req,res,next){
+    console.log('e',req.method)
+    next();
+})
+//处理/user/:id 渲染一个特殊页面
+router.get('/user/:id',function(req,res,next){
+    console.log('req.params.id')
+    res.render('s')
+})
+//将路由挂载到应用
+app.use('/',router);
+
+(4)错误处理中间件
+错误处理中间件与其他类似就是 就是4个参数
+app.use(function(err,req,res,next){
+    console.log(err,stack)
+    res.status(500).send('Something broke')
+})
+
+(5)内置中间件
+express.static(root,[options])
+这是express唯一内置的中间件，它基于server-static负责在express应用中提托管静态资源
+参数root指提供静态资源的根目录
+可选的options参数以下
+dotfiles是否对外输出文件名以点（.）开头的文件。可选allow deny ignore
+etag是否启用etag生成
+extensions设置文件扩展名备份选项
+index发送目录索引文件，设置false禁用目录索引
+lastModified 设置Last-Modified头为文件在操作系统上的最后修改日期
+maxAge以毫秒或者其字符串格式设置Cache-Control头的max-age属性
+redirect当路径为目录的时候，重定向至'/'
+setHeaders设置http头以提供文件的函数
+
+每个应用可有多个静态目录
+app.use(express.static('public'))
+
+====模板引擎
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
