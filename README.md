@@ -1,4 +1,3 @@
-# MyNode
 ## Node crawler
 这是用node实现爬虫效果，具体使用的技术有：</br>
 superagent可以发起http请求</br>
@@ -13,4 +12,4 @@ async：多线程并发控制</br>
 
 ## 本地服务器
 利用express连上mongodb数据库实现本地的一个服务器</br>
-说明：
+
