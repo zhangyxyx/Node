@@ -1,5 +1,5 @@
 # MyNode
-##Node crawler
+## Node crawler
 这是用node实现爬虫效果，具体使用的技术有：</br>
 superagent可以发起http请求</br>
 cheerio解析http返回的html内容，可以理解为一个Node.js版的 jquery，使用方式跟jquery相同</br>
@@ -11,6 +11,6 @@ async：多线程并发控制</br>
 下载：git clone 路径</br>
 执行：node index.js</br>
 
-##本地服务器
+## 本地服务器
 利用express连上mongodb数据库实现本地的一个服务器</br>
 说明：
