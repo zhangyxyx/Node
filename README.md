@@ -1,9 +1,5 @@
 # MyNode
-<span>demo文件里面放的都是刚开始看node的时候一个语法一个语法敲的例子</span></br>
-<span>nodedemo1是照着别人的项目写的<a href="http://www.nodebeginner.org/index-zh-cn.html#about">地址</a></span></br>
-<span>nodedemo2同样是照着别人的项目写的<a href="http://blog.csdn.net/as17618/article/details/17791735">地址</a></span>
-</hr>
-<h3>Node crawler</h3>
+##Node crawler
 <p>这个文件夹里面是node实现爬虫的效果</p>
 <p>具体使用的技术有：</p>
 <ul>
@@ -17,3 +13,6 @@
 <p>简要介绍：利用superagnet获取都路径下面的结果，使用cheerio将结果转为html解析，然后根据这个路径真实的页面下的html结果，获取你想获取的数据</p>
 <p class="highlight highlight-source-shell">下载：git clone 路径</p>
 <p class="highlight highlight-source-shell">执行：node index.js</p>
+##本地服务器
+利用express连上mongodb数据库实现本地的一个服务器</br>
+说明：
