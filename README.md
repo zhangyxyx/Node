@@ -1,7 +1,7 @@
 # MyNode
 ##Node crawler
-这是用node实现爬虫效果，具体使用的技术有：
-superagent可以发起http请求
+这是用node实现爬虫效果，具体使用的技术有：</br>
+superagent可以发起http请求</br>
 cheerio解析http返回的html内容，可以理解为一个Node.js版的 jquery，使用方式跟jquery相同</br>
 fs设置文件，在获取到图片的路径之后，可以实现将图片保存在本地</br>
 request采用这个模块，向服务器发起请求，获取图片资源</br>
