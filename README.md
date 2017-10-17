@@ -15,7 +15,7 @@ async：多线程并发控制</br>
 #### 实现步骤
 * 下载npm node express(这个应该都会)
 * 下载好了之后执行npm start出现这种就是加载好了，然后再浏览器地址栏输入localhost:3000
-* 看一下当前的目录
+* 看一下当前的目录  
   * views是前台代码</br>
   * database里面放的是链接mongodb的代码和设置前后台接口的代码</br>
   * public里面的是前台页面公共的文件（比如需要引入一个jquery和公共的css文件</br>
