@@ -11,5 +11,11 @@ async：多线程并发控制</br>
 执行：node index.js</br>
 
 ## 本地服务器
-利用express连上mongodb数据库实现本地的一个服务器</br>
+### 本地服务器是用express实现的一个可以连接mongodb的功能
+#### 实现步骤
+1. 下载npm node express(这个应该都会)
+2. 下载好了之后执行npm start出现这种就是加载好了，然后再浏览器地址栏输入localhost:3000
+3. 修改里面的代码
+
+
 
