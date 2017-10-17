@@ -15,6 +15,7 @@
     "serve-favicon": "~2.4.2"
   },
   "devDependencies": {
+    "connect-multiparty": "^2.0.0",
     "mongoose": "^4.11.13"
   }
 }

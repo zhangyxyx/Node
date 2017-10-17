@@ -1,5 +1,5 @@
 var mongoose=require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/test',{useMongoClient: true});
 
 const db=mongoose.connection;
 db.once('error',()=>console.log('error!'))
@@ -14,7 +14,11 @@ const list=mongoose.Schema({
     like:Number,
     collect:Number
 })
+const files=mongoose.Schema({
+    file:String,
+})
 const Models={
-    list:mongoose.model('list',list,'list')
+    list:mongoose.model('list',list,'list'),
+    files:mongoose.model('files',files,'files')
 }
 module.exports=Models;
