@@ -1,4 +1,4 @@
-## Node crawler
+## Node crawler(node实现爬虫)
 这是用node实现爬虫效果，具体使用的技术有：</br>
 superagent可以发起http请求</br>
 cheerio解析http返回的html内容，可以理解为一个Node.js版的 jquery，使用方式跟jquery相同</br>
