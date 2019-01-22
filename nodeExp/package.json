@@ -1,0 +1,18 @@
+{
+  "name": "nodeexp",
+  "version": "1.0.0",
+  "description": "demo",
+  "main": "fs.js",
+  "dependencies": {
+    "excel-parser": "^0.2.2"
+  },
+  "devDependencies": {
+    "node-xlsx": "^0.12.1",
+    "textract": "^2.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
