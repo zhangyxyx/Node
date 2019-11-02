@@ -16,6 +16,6 @@
   },
   "devDependencies": {
     "connect-multiparty": "^2.0.0",
-    "mongoose": "^4.11.13"
+    "mongoose": "^5.7.7"
   }
 }
